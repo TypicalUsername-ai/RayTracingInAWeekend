@@ -1,3 +1,5 @@
+use std::ops;
+
 #[derive(Debug)]
 pub struct Vec3 {
     xyz: [f32; 3],
@@ -19,11 +21,13 @@ mod default_test {
         assert_eq!(v.xyz, [0.0; 3])
     }
 }
+
 impl From<[f32; 3]> for Vec3 {
     fn from(value: [f32; 3]) -> Self {
         Self { xyz: value }
     }
 }
+
 #[cfg(test)]
 mod from_tests {
 
@@ -63,5 +67,71 @@ mod index_tests {
     fn bad_access() {
         let v = Vec3::from([0.0, 0.2, 0.4]);
         assert_eq!(v[4], 0.0);
+    }
+}
+
+impl ops::Add for Vec3 {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Self {
+            xyz: [
+                self.xyz[0] + rhs.xyz[0],
+                self.xyz[1] + rhs.xyz[1],
+                self.xyz[2] + rhs.xyz[2],
+            ],
+        }
+    }
+}
+
+#[cfg(test)]
+mod add_tests {
+    use super::*;
+
+    #[test]
+    fn base_add() {
+        let v = Vec3::from([0.0, 0.1, 0.2]);
+        let rhs = Vec3::from([0.1, 0.3, 0.5]);
+        let sum = v + rhs;
+        assert_eq!(sum.xyz, [0.1, 0.4, 0.7]);
+    }
+
+    #[test]
+    fn overflow_add() {
+        let v = Vec3::from([0.0, 0.1, f32::MAX]);
+        let rhs = Vec3::from([0.1, 0.3, 0.5]);
+        let sum = v + rhs;
+        assert_eq!(sum.xyz, [0.1, 0.4, f32::MAX])
+    }
+}
+
+impl ops::AddAssign for Vec3 {
+    fn add_assign(&mut self, rhs: Self) {
+        self.xyz = [
+            self.xyz[0] + rhs.xyz[0],
+            self.xyz[1] + rhs.xyz[1],
+            self.xyz[2] + rhs.xyz[2],
+        ];
+    }
+}
+
+#[cfg(test)]
+mod addasign_tests {
+    use super::*;
+
+    #[test]
+    fn base_add() {
+        let mut v = Vec3::from([0.0, 0.1, 0.2]);
+        let rhs = Vec3::from([0.1, 0.3, 0.5]);
+        v += rhs;
+        assert_eq!(v.xyz, [0.1, 0.4, 0.7]);
+    }
+
+    #[test]
+    fn overflow_add() {
+        let mut v = Vec3::from([0.0, 0.1, f32::MAX]);
+        let rhs = Vec3::from([0.1, 0.3, 13.5]);
+        v += rhs;
+        assert_eq!(v.xyz, [0.1, 0.4, f32::MAX])
     }
 }
