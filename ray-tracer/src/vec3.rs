@@ -170,3 +170,35 @@ mod sub_tests {
         assert_eq!(sum.xyz, [-0.1, 0.7, f32::MIN])
     }
 }
+
+impl ops::SubAssign for Vec3 {
+    fn sub_assign(&mut self, rhs: Self) {
+        self.xyz = [
+            self.xyz[0] - rhs.xyz[0],
+            self.xyz[1] - rhs.xyz[1],
+            self.xyz[2] - rhs.xyz[2],
+        ];
+    }
+}
+
+#[cfg(test)]
+mod subassign_tests {
+
+    use super::*;
+
+    #[test]
+    fn base_sub() {
+        let mut v = Vec3::from([0.0, 1.0, 0.5]);
+        let rhs = Vec3::from([0.1, 0.3, 13.5]);
+        v -= rhs;
+        assert_eq!(v.xyz, [-0.1, 0.7, -13.0])
+    }
+
+    #[test]
+    fn overflow_sub() {
+        let mut v = Vec3::from([0.0, 1.0, f32::MIN]);
+        let rhs = Vec3::from([0.1, 0.3, 13.5]);
+        v -= rhs;
+        assert_eq!(v.xyz, [-0.1, 0.7, f32::MIN])
+    }
+}
