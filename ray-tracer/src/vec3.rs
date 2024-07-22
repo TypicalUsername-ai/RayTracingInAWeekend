@@ -322,7 +322,7 @@ mod mul_tests {
 
     #[test]
     fn scalar_nan_mul() {
-        let v = Vec3::from([1.0, 2.0, 3.0]);
+        let v = Vec3::from([1.0, -2.0, 0.0]);
         let res = v * f32::NAN;
         assert!(res.x().is_nan());
         assert!(res.y().is_nan());
@@ -340,6 +340,11 @@ impl ops::MulAssign for Vec3 {
     }
 }
 
+impl ops::MulAssign<f32> for Vec3 {
+    fn mul_assign(&mut self, rhs: f32) {
+        self.xyz = [self.xyz[0] * rhs, self.xyz[1] * rhs, self.xyz[2] * rhs];
+    }
+}
 #[cfg(test)]
 mod mulassign_tests {
 
@@ -359,6 +364,22 @@ mod mulassign_tests {
         let rhs = Vec3::from([f32::NEG_INFINITY, f32::INFINITY, f32::NEG_INFINITY]);
         v *= rhs;
         assert_eq!(v.x(), f32::INFINITY);
+        assert!(v.y().is_nan());
+        assert!(v.z().is_nan());
+    }
+
+    #[test]
+    fn scalar_mul() {
+        let mut v = Vec3::from([1.0, f32::INFINITY, f32::NEG_INFINITY]);
+        v *= -2.0;
+        assert_eq!(v.xyz, [-2.0, f32::NEG_INFINITY, f32::INFINITY])
+    }
+
+    #[test]
+    fn scalar_nan_mul() {
+        let mut v = Vec3::from([1.0, -2.0, 0.0]);
+        v *= f32::NAN;
+        assert!(v.x().is_nan());
         assert!(v.y().is_nan());
         assert!(v.z().is_nan());
     }
