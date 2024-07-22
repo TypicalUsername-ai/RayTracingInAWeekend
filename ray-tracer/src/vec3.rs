@@ -10,14 +10,17 @@ impl Vec3 {
         Self { xyz: [x, y, z] }
     }
 
+    #[inline]
     pub fn x(&self) -> f32 {
         self.xyz[0]
     }
 
+    #[inline]
     pub fn y(&self) -> f32 {
         self.xyz[1]
     }
 
+    #[inline]
     pub fn z(&self) -> f32 {
         self.xyz[2]
     }
@@ -28,6 +31,20 @@ impl Vec3 {
             self.xyz[2] * rhs.xyz[0] - self.xyz[0] * rhs.xyz[2],
             self.xyz[0] * rhs.xyz[1] - self.xyz[1] * rhs.xyz[0],
         )
+    }
+
+    pub fn unit_vector(&self) -> Self {
+        *self / self.length()
+    }
+
+    #[inline]
+    pub fn length(&self) -> f32 {
+        self.length_squared().sqrt()
+    }
+
+    #[inline]
+    pub fn length_squared(&self) -> f32 {
+        self.x() * self.x() + self.y() * self.y() + self.z() * self.z()
     }
 }
 
@@ -51,6 +68,19 @@ mod impl_tests {
         let rhs = Vec3::from([4.0, 5.0, 6.0]);
         let cross = v.cross(&rhs);
         assert_eq!(cross.xyz, [-3.0, 6.0, -3.0])
+    }
+
+    #[test]
+    fn length_tests() {
+        let v = Vec3::from([0.0, -3.0, 4.0]);
+        assert_eq!(v.length_squared(), 25.0);
+        assert_eq!(v.length(), 5.0)
+    }
+
+    #[test]
+    fn unit_vector() {
+        let v = Vec3::from([0.0, -3.0, 4.0]);
+        assert_eq!(v.unit_vector().xyz, [0.0, -0.6, 0.8]);
     }
 }
 
