@@ -70,6 +70,36 @@ mod index_tests {
     }
 }
 
+impl ops::IndexMut<usize> for Vec3 {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.xyz[index]
+    }
+}
+
+#[cfg(test)]
+mod indexmut_tests {
+
+    use super::*;
+
+    #[test]
+    fn good_access() {
+        let mut v = Vec3::from([0.0, 0.2, 0.4]);
+        v[0] = 2.0;
+        v[1] = 3.3;
+        v[2] = -22.0;
+        assert_eq!(v[0], 2.0);
+        assert_eq!(v[1], 3.3);
+        assert_eq!(v[2], -22.0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn bad_access() {
+        let mut v = Vec3::from([0.0, 0.2, 0.4]);
+        v[3] = -33.0;
+    }
+}
+
 impl ops::Add for Vec3 {
     type Output = Self;
 
