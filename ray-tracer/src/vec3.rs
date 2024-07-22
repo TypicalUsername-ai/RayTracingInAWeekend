@@ -316,3 +316,37 @@ mod mul_tests {
         assert!(res.z().is_nan());
     }
 }
+
+impl ops::MulAssign for Vec3 {
+    fn mul_assign(&mut self, rhs: Self) {
+        self.xyz = [
+            self.xyz[0] * rhs.xyz[0],
+            self.xyz[1] * rhs.xyz[1],
+            self.xyz[2] * rhs.xyz[2],
+        ];
+    }
+}
+
+#[cfg(test)]
+mod mulassign_tests {
+
+    use super::*;
+
+    #[test]
+    fn basic_mult() {
+        let mut v = Vec3::from([1.0, 2.0, 3.0]);
+        let rhs = Vec3::from([2.0, 0.0, 3.0]);
+        v *= rhs;
+        assert_eq!(v.xyz, [2.0, 0.0, 9.0])
+    }
+
+    #[test]
+    fn nan_mult() {
+        let mut v = Vec3::from([f32::NEG_INFINITY, 0.0, 0.0]);
+        let rhs = Vec3::from([f32::NEG_INFINITY, f32::INFINITY, f32::NEG_INFINITY]);
+        v *= rhs;
+        assert_eq!(v.x(), f32::INFINITY);
+        assert!(v.y().is_nan());
+        assert!(v.z().is_nan());
+    }
+}
