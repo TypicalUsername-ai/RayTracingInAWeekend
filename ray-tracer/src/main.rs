@@ -1,4 +1,5 @@
 use std::io::{stderr, stdout, Write};
+mod vec3;
 
 fn main() {
     let width = 256;
