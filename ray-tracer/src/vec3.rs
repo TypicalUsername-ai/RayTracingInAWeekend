@@ -5,6 +5,39 @@ pub struct Vec3 {
     xyz: [f32; 3],
 }
 
+impl Vec3 {
+    pub fn new(x: f32, y: f32, z: f32) -> Self {
+        Self { xyz: [x, y, z] }
+    }
+
+    pub fn x(&self) -> f32 {
+        self.xyz[0]
+    }
+
+    pub fn y(&self) -> f32 {
+        self.xyz[1]
+    }
+
+    pub fn z(&self) -> f32 {
+        self.xyz[2]
+    }
+}
+
+#[cfg(test)]
+mod impl_tests {
+
+    use super::*;
+
+    #[test]
+    fn new_xyz_tests() {
+        let v = Vec3::new(1.0, 2.2, 3.3);
+
+        assert_eq!(v.x(), 1.0);
+        assert_eq!(v.y(), 2.2);
+        assert_eq!(v.z(), 3.3);
+    }
+}
+
 impl Default for Vec3 {
     fn default() -> Self {
         Self { xyz: [0.0; 3] }
