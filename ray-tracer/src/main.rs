@@ -1,3 +1,23 @@
+use std::io::{stdout, Write};
+
 fn main() {
-    println!("Hello, world!");
+    let width = 256;
+    let height = 256;
+
+    let mut lock = stdout().lock();
+    write!(lock, "P3\n{width} {height}\n255\n");
+    for y in 0..height {
+        for x in 0..width {
+            let red = x as f32 / (width - 1) as f32;
+            let green = y as f32 / (height - 1) as f32;
+            let blue = 0f32;
+            writeln!(
+                lock,
+                "{} {} {}",
+                (red * 255.999) as u8,
+                (green * 255.999) as u8,
+                (blue * 255.999) as u8
+            );
+        }
+    }
 }
