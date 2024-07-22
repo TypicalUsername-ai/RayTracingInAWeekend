@@ -21,6 +21,14 @@ impl Vec3 {
     pub fn z(&self) -> f32 {
         self.xyz[2]
     }
+
+    pub fn cross(&self, rhs: &Self) -> Self {
+        Vec3::new(
+            self.xyz[1] * rhs.xyz[2] - self.xyz[2] * rhs.xyz[1],
+            self.xyz[2] * rhs.xyz[0] - self.xyz[0] * rhs.xyz[2],
+            self.xyz[0] * rhs.xyz[1] - self.xyz[1] * rhs.xyz[0],
+        )
+    }
 }
 
 #[cfg(test)]
@@ -35,6 +43,14 @@ mod impl_tests {
         assert_eq!(v.x(), 1.0);
         assert_eq!(v.y(), 2.2);
         assert_eq!(v.z(), 3.3);
+    }
+
+    #[test]
+    fn cross_product() {
+        let v = Vec3::from([1.0, 2.0, 3.0]);
+        let rhs = Vec3::from([4.0, 5.0, 6.0]);
+        let cross = v.cross(&rhs);
+        assert_eq!(cross.xyz, [-3.0, 6.0, -3.0])
     }
 }
 
