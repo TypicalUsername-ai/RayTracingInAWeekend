@@ -448,3 +448,61 @@ mod div_tests {
         assert!(res.z().is_nan());
     }
 }
+
+impl ops::DivAssign for Vec3 {
+    fn div_assign(&mut self, rhs: Self) {
+        self.xyz = [
+            self.xyz[0] / rhs.xyz[0],
+            self.xyz[1] / rhs.xyz[1],
+            self.xyz[2] / rhs.xyz[2],
+        ];
+    }
+}
+
+impl ops::DivAssign<f32> for Vec3 {
+    fn div_assign(&mut self, rhs: f32) {
+        *self *= 1.0 / rhs
+    }
+}
+
+#[cfg(test)]
+mod divassign_tests {
+
+    use super::*;
+
+    #[test]
+    fn basic_div() {
+        let mut v = Vec3::from([1.0, 2.0, 3.0]);
+        let rhs = Vec3::from([2.0, 0.0, -3.0]);
+        v /= rhs;
+        assert_eq!(v.x(), 0.5);
+        assert_eq!(v.y(), f32::INFINITY);
+        assert_eq!(v.z(), -1.0);
+    }
+
+    #[test]
+    fn nan_div() {
+        let mut v = Vec3::from([f32::NEG_INFINITY, 0.0, f32::INFINITY]);
+        let rhs = Vec3::from([f32::NEG_INFINITY, f32::INFINITY, -0.0]);
+        v /= rhs;
+        assert!(v.x().is_nan());
+        assert_eq!(v.y(), 0.0);
+        assert_eq!(v.z(), f32::NEG_INFINITY);
+    }
+
+    #[test]
+    fn scalar_div() {
+        let mut v = Vec3::from([1.0, f32::INFINITY, f32::NEG_INFINITY]);
+        v /= -2.0;
+        assert_eq!(v.xyz, [-0.5, f32::NEG_INFINITY, f32::INFINITY])
+    }
+
+    #[test]
+    fn scalar_nan_div() {
+        let mut v = Vec3::from([1.0, f32::INFINITY, f32::NEG_INFINITY]);
+        v /= f32::NAN;
+        assert!(v.x().is_nan());
+        assert!(v.y().is_nan());
+        assert!(v.z().is_nan());
+    }
+}
