@@ -10,10 +10,6 @@ impl Vec3 {
         Self { xyz: [x, y, z] }
     }
 
-    pub fn mul_scalar(self, rhs: f32) -> Self {
-        self * Vec3::from([rhs, rhs, rhs])
-    }
-
     pub fn x(&self) -> f32 {
         self.xyz[0]
     }
@@ -39,15 +35,6 @@ mod impl_tests {
         assert_eq!(v.x(), 1.0);
         assert_eq!(v.y(), 2.2);
         assert_eq!(v.z(), 3.3);
-    }
-
-    #[test]
-    fn mul_scalar() {
-        let v = Vec3::new(1.0, 2.2, 3.3).mul_scalar(2.0);
-
-        assert_eq!(v.x(), 2.0);
-        assert_eq!(v.y(), 4.4);
-        assert_eq!(v.z(), 6.6);
     }
 }
 
@@ -293,6 +280,16 @@ impl ops::Mul for Vec3 {
     }
 }
 
+impl ops::Mul<f32> for Vec3 {
+    type Output = Self;
+
+    fn mul(self, rhs: f32) -> Self::Output {
+        Self {
+            xyz: [self.xyz[0] * rhs, self.xyz[1] * rhs, self.xyz[2] * rhs],
+        }
+    }
+}
+
 #[cfg(test)]
 mod mul_tests {
 
@@ -312,6 +309,22 @@ mod mul_tests {
         let rhs = Vec3::from([f32::NEG_INFINITY, f32::INFINITY, f32::NEG_INFINITY]);
         let res = v * rhs;
         assert_eq!(res.x(), f32::INFINITY);
+        assert!(res.y().is_nan());
+        assert!(res.z().is_nan());
+    }
+
+    #[test]
+    fn scalar_mul() {
+        let v = Vec3::from([1.0, f32::INFINITY, f32::NEG_INFINITY]);
+        let res = v * -2.0;
+        assert_eq!(res.xyz, [-2.0, f32::NEG_INFINITY, f32::INFINITY])
+    }
+
+    #[test]
+    fn scalar_nan_mul() {
+        let v = Vec3::from([1.0, 2.0, 3.0]);
+        let res = v * f32::NAN;
+        assert!(res.x().is_nan());
         assert!(res.y().is_nan());
         assert!(res.z().is_nan());
     }
