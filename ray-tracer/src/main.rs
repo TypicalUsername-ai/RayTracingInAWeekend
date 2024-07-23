@@ -3,6 +3,7 @@ mod color;
 mod ray;
 mod vec3;
 use color::Color;
+use ray::Ray;
 use vec3::Vec3;
 
 fn main() {
