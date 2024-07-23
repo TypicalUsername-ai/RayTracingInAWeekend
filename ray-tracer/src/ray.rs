@@ -1,3 +1,4 @@
+use crate::color::Color;
 use crate::vec3::{Point3, Vec3};
 use crate::velem::VElem;
 
@@ -26,6 +27,10 @@ impl<T: VElem> Ray<T> {
             origin: origin.into(),
             direction: direction.into(),
         }
+    }
+
+    pub fn color(&self) -> Color<T> {
+        Color::default()
     }
 }
 
