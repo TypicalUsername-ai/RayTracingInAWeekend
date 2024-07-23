@@ -9,8 +9,13 @@ type Vec3 = vec3::Vec3<f32>;
 type Ray = ray::Ray<f32>;
 
 fn main() {
-    let width = 256;
-    let height = 256;
+    let aspect_ratio = 16.0 / 9.0;
+    let width = 400;
+    let height = (width as f32 / aspect_ratio).round() as i32;
+    assert!(height > 1);
+
+    let viewport_height = 2.0;
+    let viewport_width = viewport_height * (width as f32 / height as f32);
 
     let mut lock = stdout().lock();
     let mut err = stderr().lock();
