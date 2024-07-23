@@ -30,7 +30,13 @@ impl<T: VElem> Ray<T> {
     }
 
     pub fn color(&self) -> Color<T> {
-        Color::default()
+        let unit_direction = self.direction().unit_vector();
+        let a: T = (unit_direction.y() + 1.0.into()) * 0.5.into();
+        let mut result = Color::new(1.0.into(), 1.0.into(), 1.0.into());
+        let scaler: T = (<T as From<f32>>::from(1.0) - a).into();
+        result *= scaler;
+        result += Color::new(0.5.into(), 0.7.into(), 1.0.into()) * a;
+        result
     }
 }
 
