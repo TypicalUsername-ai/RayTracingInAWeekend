@@ -6,7 +6,7 @@ pub struct Vec3<T: VElem> {
     xyz: [T; 3],
 }
 
-pub type Point3<T: VElem> = Vec3<T>;
+pub type Point3<T> = Vec3<T>;
 
 impl<T> Vec3<T>
 where

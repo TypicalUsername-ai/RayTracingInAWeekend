@@ -2,7 +2,7 @@ use crate::vec3::Vec3;
 use crate::velem::VElem;
 use std::io::Write;
 
-pub type Color<T: VElem> = Vec3<T>;
+pub type Color<T> = Vec3<T>;
 
 impl<T: VElem + From<f32>> Color<T> {
     pub fn write_color<W>(self, out: &mut W) -> Result<(), std::io::Error>
