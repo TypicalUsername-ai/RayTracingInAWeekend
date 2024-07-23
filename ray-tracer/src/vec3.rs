@@ -103,9 +103,12 @@ mod default_test {
     }
 }
 
-impl From<[f32; 3]> for Vec3 {
-    fn from(value: [f32; 3]) -> Self {
-        Self { xyz: value }
+impl<T> From<T> for Vec3
+where
+    T: Into<[f32; 3]> + Sized,
+{
+    fn from(value: T) -> Self {
+        Self { xyz: value.into() }
     }
 }
 
