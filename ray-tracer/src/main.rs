@@ -1,6 +1,8 @@
 use std::io::{stderr, stdout, Write};
 mod color;
 mod vec3;
+use color::Color;
+use vec3::Vec3;
 
 fn main() {
     let width = 256;
@@ -13,17 +15,12 @@ fn main() {
         write!(err, "\rLines remaining: {}  ", height - y).unwrap();
         let _ = err.flush();
         for x in 0..width {
-            let red = x as f32 / (width - 1) as f32;
-            let green = y as f32 / (height - 1) as f32;
-            let blue = 0f32;
-            writeln!(
-                lock,
-                "{} {} {}",
-                (red * 255.999) as u8,
-                (green * 255.999) as u8,
-                (blue * 255.999) as u8
-            )
-            .unwrap();
+            let pixel = Color::new(
+                x as f32 / (width - 1) as f32,
+                y as f32 / (height - 1) as f32,
+                0.0,
+            );
+            pixel.write_color(&mut lock).unwrap()
         }
     }
     write!(err, "\r Done                          \n").unwrap();
