@@ -2,9 +2,11 @@ use std::io::{stderr, stdout, Write};
 mod color;
 mod ray;
 mod vec3;
+mod velem;
 use color::Color;
-use ray::Ray;
-use vec3::Vec3;
+
+type Vec3 = vec3::Vec3<f32>;
+type Ray = ray::Ray<f32>;
 
 fn main() {
     let width = 256;
