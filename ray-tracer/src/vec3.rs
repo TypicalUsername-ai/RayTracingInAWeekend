@@ -5,6 +5,8 @@ pub struct Vec3 {
     xyz: [f32; 3],
 }
 
+pub type Point3 = Vec3;
+
 impl Vec3 {
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         Self { xyz: [x, y, z] }
