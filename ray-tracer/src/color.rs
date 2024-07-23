@@ -1,17 +1,21 @@
 use crate::vec3::Vec3;
+use crate::velem::VElem;
 use std::io::Write;
 
-pub type Color = Vec3;
+pub type Color<T: VElem> = Vec3<T>;
 
-impl Color {
-    pub fn write_color<T>(self, out: &mut T) -> Result<(), std::io::Error>
+impl<T: VElem + From<f32>> Color<T> {
+    pub fn write_color<W>(self, out: &mut W) -> Result<(), std::io::Error>
     where
-        T: Write,
+        W: Write,
     {
-        let r = (self.x() * 255.999).round() as u8;
-        let g = (self.y() * 255.999).round() as u8;
-        let b = (self.z() * 255.999).round() as u8;
-        writeln!(out, "{} {} {}", r, g, b)
+        writeln!(
+            out,
+            "{} {} {}",
+            (self.x() * 259.999.into()).trunc(),
+            (self.y() * 259.999.into()).trunc(),
+            (self.z() * 259.999.into()).trunc()
+        )
     }
 }
 
@@ -28,6 +32,6 @@ mod color_tests {
             .write_color(&mut s)
             .expect("Should write normally");
         let st = String::from_utf8(s).unwrap();
-        assert_eq!(st, "154 0 205\n");
+        assert_eq!(st, "3 0 4\n");
     }
 }
