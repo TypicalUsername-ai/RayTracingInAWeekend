@@ -1,6 +1,5 @@
-use num_traits::Num;
+use num_traits::Float;
 
-pub trait VElem: Num + Copy {}
+pub trait VElem: Float + Copy {}
 
 impl VElem for f32 {}
-impl VElem for u8 {}
