@@ -1,29 +1,33 @@
+use num_traits::Num;
 use std::ops;
 
 #[derive(Debug, Clone, Copy)]
-pub struct Vec3 {
-    xyz: [f32; 3],
+pub struct Vec3<T: Num> {
+    xyz: [T; 3],
 }
 
-pub type Point3 = Vec3;
+pub type Point3<T: Num> = Vec3<T>;
 
-impl Vec3 {
-    pub fn new(x: f32, y: f32, z: f32) -> Self {
+impl<T> Vec3<T>
+where
+    T: Num + Copy,
+{
+    pub fn new(x: T, y: T, z: T) -> Self {
         Self { xyz: [x, y, z] }
     }
 
     #[inline]
-    pub fn x(&self) -> f32 {
+    pub fn x(&self) -> T {
         self.xyz[0]
     }
 
     #[inline]
-    pub fn y(&self) -> f32 {
+    pub fn y(&self) -> T {
         self.xyz[1]
     }
 
     #[inline]
-    pub fn z(&self) -> f32 {
+    pub fn z(&self) -> T {
         self.xyz[2]
     }
 
@@ -40,12 +44,12 @@ impl Vec3 {
     }
 
     #[inline]
-    pub fn length(&self) -> f32 {
+    pub fn length(&self) -> T {
         self.length_squared().sqrt()
     }
 
     #[inline]
-    pub fn length_squared(&self) -> f32 {
+    pub fn length_squared(&self) -> T {
         self.x() * self.x() + self.y() * self.y() + self.z() * self.z()
     }
 }
@@ -86,14 +90,17 @@ mod impl_tests {
     }
 }
 
-impl Default for Vec3 {
+impl<T: Num + Default + Copy> Default for Vec3<T> {
     fn default() -> Self {
-        Self { xyz: [0.0; 3] }
+        Self {
+            xyz: [T::default(); 3],
+        }
     }
 }
 
 #[cfg(test)]
 mod default_test {
+
     use super::*;
 
     #[test]
@@ -103,11 +110,12 @@ mod default_test {
     }
 }
 
-impl<T> From<T> for Vec3
+impl<T, F> From<F> for Vec3<T>
 where
-    T: Into<[f32; 3]> + Sized,
+    T: Num,
+    F: Into<[T; 3]> + Sized,
 {
-    fn from(value: T) -> Self {
+    fn from(value: F) -> Self {
         Self { xyz: value.into() }
     }
 }
@@ -124,8 +132,8 @@ mod from_tests {
     }
 }
 
-impl ops::Index<usize> for Vec3 {
-    type Output = f32;
+impl<T: Num> ops::Index<usize> for Vec3<T> {
+    type Output = T;
 
     /// this WILL panic!() if index > 2
     fn index(&self, index: usize) -> &Self::Output {
@@ -154,7 +162,7 @@ mod index_tests {
     }
 }
 
-impl ops::IndexMut<usize> for Vec3 {
+impl<T: Num> ops::IndexMut<usize> for Vec3<T> {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.xyz[index]
     }
@@ -184,7 +192,7 @@ mod indexmut_tests {
     }
 }
 
-impl ops::Add for Vec3 {
+impl<T: Num + Copy> ops::Add for Vec3<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
@@ -200,6 +208,7 @@ impl ops::Add for Vec3 {
 
 #[cfg(test)]
 mod add_tests {
+
     use super::*;
 
     #[test]
@@ -219,7 +228,7 @@ mod add_tests {
     }
 }
 
-impl ops::AddAssign for Vec3 {
+impl<T: Num + Copy> ops::AddAssign for Vec3<T> {
     fn add_assign(&mut self, rhs: Self) {
         self.xyz = [
             self.xyz[0] + rhs.xyz[0],
@@ -250,7 +259,7 @@ mod addasign_tests {
     }
 }
 
-impl ops::Sub for Vec3 {
+impl<T: Num + Copy> ops::Sub for Vec3<T> {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self::Output {
         Self {
@@ -285,7 +294,7 @@ mod sub_tests {
     }
 }
 
-impl ops::SubAssign for Vec3 {
+impl<T: Num + Copy> ops::SubAssign for Vec3<T> {
     fn sub_assign(&mut self, rhs: Self) {
         self.xyz = [
             self.xyz[0] - rhs.xyz[0],
@@ -317,7 +326,7 @@ mod subassign_tests {
     }
 }
 
-impl ops::Mul for Vec3 {
+impl<T: Num + Copy> ops::Mul for Vec3<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
@@ -331,10 +340,10 @@ impl ops::Mul for Vec3 {
     }
 }
 
-impl ops::Mul<f32> for Vec3 {
+impl<T: Num + Copy> ops::Mul<T> for Vec3<T> {
     type Output = Self;
 
-    fn mul(self, rhs: f32) -> Self::Output {
+    fn mul(self, rhs: T) -> Self::Output {
         Self {
             xyz: [self.xyz[0] * rhs, self.xyz[1] * rhs, self.xyz[2] * rhs],
         }
@@ -381,7 +390,7 @@ mod mul_tests {
     }
 }
 
-impl ops::MulAssign for Vec3 {
+impl<T: Num + Copy> ops::MulAssign for Vec3<T> {
     fn mul_assign(&mut self, rhs: Self) {
         self.xyz = [
             self.xyz[0] * rhs.xyz[0],
@@ -391,8 +400,8 @@ impl ops::MulAssign for Vec3 {
     }
 }
 
-impl ops::MulAssign<f32> for Vec3 {
-    fn mul_assign(&mut self, rhs: f32) {
+impl<T: Num + Copy> ops::MulAssign<T> for Vec3<T> {
+    fn mul_assign(&mut self, rhs: T) {
         self.xyz = [self.xyz[0] * rhs, self.xyz[1] * rhs, self.xyz[2] * rhs];
     }
 }
@@ -436,7 +445,7 @@ mod mulassign_tests {
     }
 }
 
-impl ops::Div for Vec3 {
+impl<T: Num + Copy> ops::Div for Vec3<T> {
     type Output = Self;
 
     fn div(self, rhs: Self) -> Self::Output {
@@ -450,11 +459,13 @@ impl ops::Div for Vec3 {
     }
 }
 
-impl ops::Div<f32> for Vec3 {
+impl<T: Num + Copy> ops::Div<T> for Vec3<T> {
     type Output = Self;
 
-    fn div(self, rhs: f32) -> Self::Output {
-        self * (1.0 / rhs)
+    fn div(self, rhs: T) -> Self::Output {
+        Self {
+            xyz: [self.xyz[0] / rhs, self.xyz[1] / rhs, self.xyz[2] / rhs],
+        }
     }
 }
 
@@ -500,7 +511,7 @@ mod div_tests {
     }
 }
 
-impl ops::DivAssign for Vec3 {
+impl<T: Num + Copy> ops::DivAssign for Vec3<T> {
     fn div_assign(&mut self, rhs: Self) {
         self.xyz = [
             self.xyz[0] / rhs.xyz[0],
@@ -510,9 +521,9 @@ impl ops::DivAssign for Vec3 {
     }
 }
 
-impl ops::DivAssign<f32> for Vec3 {
-    fn div_assign(&mut self, rhs: f32) {
-        *self *= 1.0 / rhs
+impl<T: Num + Copy> ops::DivAssign<T> for Vec3<T> {
+    fn div_assign(&mut self, rhs: T) {
+        self.xyz = [self.xyz[0] / rhs, self.xyz[1] / rhs, self.xyz[2] / rhs];
     }
 }
 
