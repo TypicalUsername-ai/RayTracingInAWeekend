@@ -1,4 +1,5 @@
 use std::io::{stderr, stdout, Write};
+mod color;
 mod vec3;
 
 fn main() {
@@ -7,10 +8,10 @@ fn main() {
 
     let mut lock = stdout().lock();
     let mut err = stderr().lock();
-    write!(lock, "P3\n{width} {height}\n255\n");
+    write!(lock, "P3\n{width} {height}\n255\n").unwrap();
     for y in 0..height {
-        write!(err, "\rLines remaining: {}  ", height - y);
-        err.flush();
+        write!(err, "\rLines remaining: {}  ", height - y).unwrap();
+        let _ = err.flush();
         for x in 0..width {
             let red = x as f32 / (width - 1) as f32;
             let green = y as f32 / (height - 1) as f32;
@@ -21,8 +22,9 @@ fn main() {
                 (red * 255.999) as u8,
                 (green * 255.999) as u8,
                 (blue * 255.999) as u8
-            );
+            )
+            .unwrap();
         }
     }
-    write!(err, "\r Done                          \n");
+    write!(err, "\r Done                          \n").unwrap();
 }
