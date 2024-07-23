@@ -1,16 +1,16 @@
-use num_traits::Num;
+use crate::velem::VElem;
 use std::ops;
 
-#[derive(Debug, Clone, Copy)]
-pub struct Vec3<T: Num> {
+#[derive(Clone, Copy)]
+pub struct Vec3<T: VElem> {
     xyz: [T; 3],
 }
 
-pub type Point3<T: Num> = Vec3<T>;
+pub type Point3<T: VElem> = Vec3<T>;
 
 impl<T> Vec3<T>
 where
-    T: Num + Copy,
+    T: VElem,
 {
     pub fn new(x: T, y: T, z: T) -> Self {
         Self { xyz: [x, y, z] }
@@ -90,7 +90,7 @@ mod impl_tests {
     }
 }
 
-impl<T: Num + Default + Copy> Default for Vec3<T> {
+impl<T: VElem + Default> Default for Vec3<T> {
     fn default() -> Self {
         Self {
             xyz: [T::default(); 3],
@@ -105,14 +105,14 @@ mod default_test {
 
     #[test]
     fn default_test() {
-        let v = Vec3::default();
+        let v = Vec3::<f32>::default();
         assert_eq!(v.xyz, [0.0; 3])
     }
 }
 
 impl<T, F> From<F> for Vec3<T>
 where
-    T: Num,
+    T: VElem,
     F: Into<[T; 3]> + Sized,
 {
     fn from(value: F) -> Self {
@@ -132,7 +132,7 @@ mod from_tests {
     }
 }
 
-impl<T: Num> ops::Index<usize> for Vec3<T> {
+impl<T: VElem> ops::Index<usize> for Vec3<T> {
     type Output = T;
 
     /// this WILL panic!() if index > 2
@@ -162,7 +162,7 @@ mod index_tests {
     }
 }
 
-impl<T: Num> ops::IndexMut<usize> for Vec3<T> {
+impl<T: VElem> ops::IndexMut<usize> for Vec3<T> {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.xyz[index]
     }
@@ -192,7 +192,7 @@ mod indexmut_tests {
     }
 }
 
-impl<T: Num + Copy> ops::Add for Vec3<T> {
+impl<T: VElem> ops::Add for Vec3<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
@@ -228,7 +228,7 @@ mod add_tests {
     }
 }
 
-impl<T: Num + Copy> ops::AddAssign for Vec3<T> {
+impl<T: VElem> ops::AddAssign for Vec3<T> {
     fn add_assign(&mut self, rhs: Self) {
         self.xyz = [
             self.xyz[0] + rhs.xyz[0],
@@ -259,7 +259,7 @@ mod addasign_tests {
     }
 }
 
-impl<T: Num + Copy> ops::Sub for Vec3<T> {
+impl<T: VElem> ops::Sub for Vec3<T> {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self::Output {
         Self {
@@ -294,7 +294,7 @@ mod sub_tests {
     }
 }
 
-impl<T: Num + Copy> ops::SubAssign for Vec3<T> {
+impl<T: VElem> ops::SubAssign for Vec3<T> {
     fn sub_assign(&mut self, rhs: Self) {
         self.xyz = [
             self.xyz[0] - rhs.xyz[0],
@@ -326,7 +326,7 @@ mod subassign_tests {
     }
 }
 
-impl<T: Num + Copy> ops::Mul for Vec3<T> {
+impl<T: VElem> ops::Mul for Vec3<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
@@ -340,7 +340,7 @@ impl<T: Num + Copy> ops::Mul for Vec3<T> {
     }
 }
 
-impl<T: Num + Copy> ops::Mul<T> for Vec3<T> {
+impl<T: VElem> ops::Mul<T> for Vec3<T> {
     type Output = Self;
 
     fn mul(self, rhs: T) -> Self::Output {
@@ -390,7 +390,7 @@ mod mul_tests {
     }
 }
 
-impl<T: Num + Copy> ops::MulAssign for Vec3<T> {
+impl<T: VElem> ops::MulAssign for Vec3<T> {
     fn mul_assign(&mut self, rhs: Self) {
         self.xyz = [
             self.xyz[0] * rhs.xyz[0],
@@ -400,7 +400,7 @@ impl<T: Num + Copy> ops::MulAssign for Vec3<T> {
     }
 }
 
-impl<T: Num + Copy> ops::MulAssign<T> for Vec3<T> {
+impl<T: VElem> ops::MulAssign<T> for Vec3<T> {
     fn mul_assign(&mut self, rhs: T) {
         self.xyz = [self.xyz[0] * rhs, self.xyz[1] * rhs, self.xyz[2] * rhs];
     }
@@ -445,7 +445,7 @@ mod mulassign_tests {
     }
 }
 
-impl<T: Num + Copy> ops::Div for Vec3<T> {
+impl<T: VElem> ops::Div for Vec3<T> {
     type Output = Self;
 
     fn div(self, rhs: Self) -> Self::Output {
@@ -459,7 +459,7 @@ impl<T: Num + Copy> ops::Div for Vec3<T> {
     }
 }
 
-impl<T: Num + Copy> ops::Div<T> for Vec3<T> {
+impl<T: VElem> ops::Div<T> for Vec3<T> {
     type Output = Self;
 
     fn div(self, rhs: T) -> Self::Output {
@@ -511,7 +511,7 @@ mod div_tests {
     }
 }
 
-impl<T: Num + Copy> ops::DivAssign for Vec3<T> {
+impl<T: VElem> ops::DivAssign for Vec3<T> {
     fn div_assign(&mut self, rhs: Self) {
         self.xyz = [
             self.xyz[0] / rhs.xyz[0],
@@ -521,7 +521,7 @@ impl<T: Num + Copy> ops::DivAssign for Vec3<T> {
     }
 }
 
-impl<T: Num + Copy> ops::DivAssign<T> for Vec3<T> {
+impl<T: VElem> ops::DivAssign<T> for Vec3<T> {
     fn div_assign(&mut self, rhs: T) {
         self.xyz = [self.xyz[0] / rhs, self.xyz[1] / rhs, self.xyz[2] / rhs];
     }
