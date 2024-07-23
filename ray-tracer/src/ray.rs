@@ -21,10 +21,10 @@ impl<T: VElem> Ray<T> {
     pub fn at(&self, time: T) -> Point3<T> {
         self.origin + (self.direction * time)
     }
-    pub fn new(origin: impl Into<[T; 3]>, direction: impl Into<[T; 3]>) -> Self {
+    pub fn new(origin: impl Into<Point3<T>>, direction: impl Into<Vec3<T>>) -> Self {
         Self {
-            origin: Point3::from(origin),
-            direction: Vec3::from(direction),
+            origin: origin.into(),
+            direction: direction.into(),
         }
     }
 }
