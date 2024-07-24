@@ -1,7 +1,7 @@
 use crate::velem::VElem;
 use std::ops;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Vec3<T: VElem> {
     xyz: [T; 3],
 }
@@ -37,6 +37,10 @@ where
             self.xyz[2] * rhs.xyz[0] - self.xyz[0] * rhs.xyz[2],
             self.xyz[0] * rhs.xyz[1] - self.xyz[1] * rhs.xyz[0],
         )
+    }
+
+    pub fn dot(&self, rhs: &Self) -> T {
+        self.xyz[0] * rhs.xyz[0] + self.xyz[1] * rhs.xyz[1] + self.xyz[2] * rhs.xyz[2]
     }
 
     pub fn unit_vector(&self) -> Self {
