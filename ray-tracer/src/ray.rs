@@ -29,25 +29,35 @@ impl<T: VElem> Ray<T> {
         }
     }
 
-    fn hit_sphere(&self, center: Point3<T>, radius: T) -> bool {
+    fn hit_sphere(&self, center: Point3<T>, radius: T) -> T {
         // origin to center vector
         let o_to_c = center - self.origin();
         // solving the discriminant
-        let a = self.direction().dot(&self.direction());
+        let a = self.direction().length_squared();
         let b = Into::<T>::into(-2.0) * self.direction().dot(&o_to_c);
         let c = o_to_c.dot(&o_to_c) - radius * radius;
         let discriminant = b * b - Into::<T>::into(4.0) * a * c;
-        discriminant >= Into::<T>::into(0.0)
+        if discriminant < 0.0.into() {
+            (-1.0).into()
+        } else {
+            (-b - discriminant.sqrt()) / (Into::<T>::into(2.0) * a)
+        }
     }
 
     pub fn color(&self) -> Color<T> {
-        if self.hit_sphere(
+        let sphere_hit = self.hit_sphere(
             Point3::new(0.0.into(), 0.0.into(), (-1.0).into()),
             0.5.into(),
-        ) {
-            return Color::new(1.0.into(), 0.0.into(), 0.0.into());
+        );
+        if sphere_hit > Into::<T>::into(0.0) {
+            let norm = (self.at(sphere_hit) - Vec3::new(0.0.into(), 0.0.into(), (-1.0).into()))
+                .unit_vector();
+            return Color::new(
+                norm.x() + 1.0.into(),
+                norm.y() + 1.0.into(),
+                norm.z() + 1.0.into(),
+            ) * Into::<T>::into(0.5);
         }
-
         let unit_direction = self.direction().unit_vector();
         let a: T = (unit_direction.y() + 1.0.into()) * 0.5.into();
         let mut result = Color::new(1.0.into(), 1.0.into(), 1.0.into());
