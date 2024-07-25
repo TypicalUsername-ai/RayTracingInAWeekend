@@ -29,7 +29,25 @@ impl<T: VElem> Ray<T> {
         }
     }
 
+    fn hit_sphere(&self, center: Point3<T>, radius: T) -> bool {
+        // origin to center vector
+        let o_to_c = center - self.origin();
+        // solving the discriminant
+        let a = self.direction().dot(&self.direction());
+        let b = Into::<T>::into(-2.0) * self.direction().dot(&o_to_c);
+        let c = o_to_c.dot(&o_to_c) - radius * radius;
+        let discriminant = b * b - Into::<T>::into(4.0) * a * c;
+        discriminant >= Into::<T>::into(0.0)
+    }
+
     pub fn color(&self) -> Color<T> {
+        if self.hit_sphere(
+            Point3::new(0.0.into(), 0.0.into(), (-1.0).into()),
+            0.5.into(),
+        ) {
+            return Color::new(1.0.into(), 0.0.into(), 0.0.into());
+        }
+
         let unit_direction = self.direction().unit_vector();
         let a: T = (unit_direction.y() + 1.0.into()) * 0.5.into();
         let mut result = Color::new(1.0.into(), 1.0.into(), 1.0.into());
