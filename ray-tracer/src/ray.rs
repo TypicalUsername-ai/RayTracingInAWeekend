@@ -34,13 +34,13 @@ impl<T: VElem> Ray<T> {
         let o_to_c = center - self.origin();
         // solving the discriminant
         let a = self.direction().length_squared();
-        let b = Into::<T>::into(-2.0) * self.direction().dot(&o_to_c);
-        let c = o_to_c.dot(&o_to_c) - radius * radius;
-        let discriminant = b * b - Into::<T>::into(4.0) * a * c;
+        let h = self.direction().dot(&o_to_c);
+        let c = o_to_c.length_squared() - radius * radius;
+        let discriminant = h * h - a * c;
         if discriminant < 0.0.into() {
             (-1.0).into()
         } else {
-            (-b - discriminant.sqrt()) / (Into::<T>::into(2.0) * a)
+            (h - discriminant.sqrt()) / a
         }
     }
 
