@@ -1,6 +1,8 @@
 use std::io::{stderr, stdout, Write};
 mod color;
+mod hittable;
 mod ray;
+mod sphere;
 mod vec3;
 mod velem;
 use color::Color;
