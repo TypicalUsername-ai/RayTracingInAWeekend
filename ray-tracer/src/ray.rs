@@ -1,4 +1,5 @@
 use crate::color::Color;
+use crate::hittable::Hittable;
 use crate::vec3::{Point3, Vec3};
 use crate::velem::VElem;
 
@@ -29,34 +30,9 @@ impl<T: VElem> Ray<T> {
         }
     }
 
-    fn hit_sphere(&self, center: Point3<T>, radius: T) -> T {
-        // origin to center vector
-        let o_to_c = center - self.origin();
-        // solving the discriminant
-        let a = self.direction().length_squared();
-        let h = self.direction().dot(&o_to_c);
-        let c = o_to_c.length_squared() - radius * radius;
-        let discriminant = h * h - a * c;
-        if discriminant < 0.0.into() {
-            (-1.0).into()
-        } else {
-            (h - discriminant.sqrt()) / a
-        }
-    }
-
-    pub fn color(&self) -> Color<T> {
-        let sphere_hit = self.hit_sphere(
-            Point3::new(0.0.into(), 0.0.into(), (-1.0).into()),
-            0.5.into(),
-        );
-        if sphere_hit > Into::<T>::into(0.0) {
-            let norm = (self.at(sphere_hit) - Vec3::new(0.0.into(), 0.0.into(), (-1.0).into()))
-                .unit_vector();
-            return Color::new(
-                norm.x() + 1.0.into(),
-                norm.y() + 1.0.into(),
-                norm.z() + 1.0.into(),
-            ) * Into::<T>::into(0.5);
+    pub fn color(&self, world: &impl Hittable<T>) -> Color<T> {
+        if let Some(hr) = world.hit(self, 0.0.into(), f32::MAX.into()) {
+            return (hr.normal + Color::from([1.0.into(); 3])) * Into::<T>::into(0.5);
         }
         let unit_direction = self.direction().unit_vector();
         let a: T = (unit_direction.y() + 1.0.into()) * 0.5.into();

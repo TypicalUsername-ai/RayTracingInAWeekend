@@ -1,4 +1,5 @@
 use std::io::{stderr, stdout, Write};
+use std::rc::Rc;
 mod color;
 mod hittable;
 mod hittable_list;
@@ -12,6 +13,11 @@ type Ray = ray::Ray<f32>;
 type Point = vec3::Point3<f32>;
 
 fn main() {
+    let world: hittable_list::HittableList<f32> = vec![
+        Rc::new(sphere::Sphere::new(Point::from([0.0, 0.0, -1.0]), 0.5)),
+        Rc::new(sphere::Sphere::new(Point::from([0.0, -100.5, -1.0]), 100.0)),
+    ];
+
     // image
     let aspect_ratio = 16.0 / 9.0;
     let width = 400;
@@ -57,7 +63,7 @@ fn main() {
                 pixel00_loc + (pixel_delta_u * x as f32) + (pixel_delta_v * y as f32);
             let ray_direction = pixel_center - camera_center;
             let r = Ray::new(camera_center, ray_direction);
-            let color = r.color();
+            let color = r.color(&world);
             color.write_color(&mut lock).unwrap();
         }
     }
