@@ -1,11 +1,11 @@
 use std::io::{stderr, stdout, Write};
 mod color;
 mod hittable;
+mod hittable_list;
 mod ray;
 mod sphere;
 mod vec3;
 mod velem;
-use color::Color;
 
 type Vec3 = vec3::Vec3<f32>;
 type Ray = ray::Ray<f32>;

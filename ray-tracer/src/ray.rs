@@ -2,7 +2,7 @@ use crate::color::Color;
 use crate::vec3::{Point3, Vec3};
 use crate::velem::VElem;
 
-#[derive(Default)]
+#[derive(Default, Clone, Copy)]
 pub struct Ray<T: VElem> {
     origin: Point3<T>,
     direction: Vec3<T>,
