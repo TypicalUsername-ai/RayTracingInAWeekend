@@ -37,11 +37,15 @@ impl<T: VElem> Hittable<T> for Sphere<T> {
                     return None;
                 }
             }
-            Some(HitRecord {
+            let outward_normal = (ray.at(root) - self.center) / self.radius;
+            let mut hit_r = HitRecord {
                 t: root,
                 p: ray.at(root),
-                normal: (ray.at(root) - self.center) / self.radius,
-            })
+                normal: outward_normal,
+                front_facing: false,
+            };
+            hit_r.set_face_normal(ray, outward_normal);
+            Some(hit_r)
         }
     }
 }
