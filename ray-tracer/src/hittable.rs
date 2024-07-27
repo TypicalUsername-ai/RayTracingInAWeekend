@@ -10,7 +10,7 @@ pub struct HitRecord<T: VElem> {
 }
 
 impl<T: VElem> HitRecord<T> {
-    pub fn set_face_normal(&mut self, ray: Ray<T>, outward_normal: Vec3<T>) {
+    pub fn set_face_normal(&mut self, ray: &Ray<T>, outward_normal: Vec3<T>) {
         self.front_facing = ray.direction().dot(&outward_normal) < Into::<T>::into(0.0);
         self.normal = if self.front_facing {
             outward_normal
@@ -21,7 +21,7 @@ impl<T: VElem> HitRecord<T> {
 }
 
 pub trait Hittable<T: VElem> {
-    fn hit(&self, ray: Ray<T>, ray_t_min: T, ray_t_max: T) -> Option<HitRecord<T>> {
+    fn hit(&self, ray: &Ray<T>, ray_t_min: T, ray_t_max: T) -> Option<HitRecord<T>> {
         None
     }
 }

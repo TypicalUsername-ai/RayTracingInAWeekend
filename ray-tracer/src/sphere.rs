@@ -17,7 +17,7 @@ impl<T: VElem> Sphere<T> {
 }
 
 impl<T: VElem> Hittable<T> for Sphere<T> {
-    fn hit(&self, ray: crate::ray::Ray<T>, ray_t_min: T, ray_t_max: T) -> Option<HitRecord<T>> {
+    fn hit(&self, ray: &crate::ray::Ray<T>, ray_t_min: T, ray_t_max: T) -> Option<HitRecord<T>> {
         let o_to_c = self.center - ray.origin();
         let a = ray.direction().length_squared();
         let h = ray.direction().dot(&o_to_c);
@@ -44,7 +44,7 @@ impl<T: VElem> Hittable<T> for Sphere<T> {
                 normal: outward_normal,
                 front_facing: false,
             };
-            hit_r.set_face_normal(ray, outward_normal);
+            hit_r.set_face_normal(&ray, outward_normal);
             Some(hit_r)
         }
     }
