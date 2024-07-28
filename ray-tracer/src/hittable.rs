@@ -1,6 +1,7 @@
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 use crate::velem::VElem;
+use std::ops::RangeInclusive;
 
 pub struct HitRecord<T: VElem> {
     pub p: Point3<T>,
@@ -21,7 +22,5 @@ impl<T: VElem> HitRecord<T> {
 }
 
 pub trait Hittable<T: VElem> {
-    fn hit(&self, ray: &Ray<T>, ray_t_min: T, ray_t_max: T) -> Option<HitRecord<T>> {
-        None
-    }
+    fn hit(&self, ray: &Ray<T>, ray_t: RangeInclusive<T>) -> Option<HitRecord<T>>;
 }

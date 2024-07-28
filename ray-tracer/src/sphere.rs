@@ -17,7 +17,11 @@ impl<T: VElem> Sphere<T> {
 }
 
 impl<T: VElem> Hittable<T> for Sphere<T> {
-    fn hit(&self, ray: &crate::ray::Ray<T>, ray_t_min: T, ray_t_max: T) -> Option<HitRecord<T>> {
+    fn hit(
+        &self,
+        ray: &crate::ray::Ray<T>,
+        ray_t: std::ops::RangeInclusive<T>,
+    ) -> Option<HitRecord<T>> {
         let o_to_c = self.center - ray.origin();
         let a = ray.direction().length_squared();
         let h = ray.direction().dot(&o_to_c);
@@ -31,9 +35,9 @@ impl<T: VElem> Hittable<T> for Sphere<T> {
 
             // Find the nearest root that lies in the acceptable range.
             let root = (h - sqrtd) / a;
-            if root <= ray_t_min || ray_t_max <= root {
+            if !ray_t.contains(&root) {
                 let root = (h + sqrtd) / a;
-                if root <= ray_t_min || ray_t_max <= root {
+                if !ray_t.contains(&root) {
                     return None;
                 }
             }
