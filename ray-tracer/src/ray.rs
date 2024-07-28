@@ -35,9 +35,9 @@ impl<T: VElem> Ray<T> {
             return (hr.normal + Color::from([1.0.into(); 3])) * Into::<T>::into(0.5);
         }
         let unit_direction = self.direction().unit_vector();
-        let a: T = (unit_direction.y() + 1.0.into()) * 0.5.into();
-        let mut result = Color::new(1.0.into(), 1.0.into(), 1.0.into());
-        let scaler: T = (<T as From<f32>>::from(1.0) - a).into();
+        let a: T = (unit_direction.y() + T::one()) * 0.5.into();
+        let mut result = Color::new(T::one(), T::one(), T::one());
+        let scaler: T = T::one() - a;
         result *= scaler;
         result += Color::new(0.5.into(), 0.7.into(), 1.0.into()) * a;
         result

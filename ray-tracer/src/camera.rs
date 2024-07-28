@@ -33,9 +33,9 @@ impl<T: VElem> Camera<T> {
 
         // Calculate the vectors across the horizontal and down the vertical viewport edges.
         // veiwport_u x_min -> x_max
-        let viewport_u = Vec3::<T>::new(viewport_width.into(), T::zero(), T::zero());
+        let viewport_u = Vec3::<T>::new(viewport_width, T::zero(), T::zero());
         // viewport_v y_max -> y_min
-        let viewport_v = Vec3::<T>::new(T::zero(), (-viewport_height).into(), T::zero());
+        let viewport_v = Vec3::<T>::new(T::zero(), -viewport_height, T::zero());
 
         // Calculate the horizontal and vertical delta vectors from pixel to pixel.
         // pixel_delta_u -> pixel step horizontal for the viewport
@@ -100,9 +100,9 @@ impl<T: VElem> Camera<T> {
             return (hr.normal + Color::from([1.0.into(); 3])) * Into::<T>::into(0.5);
         }
         let unit_direction = ray.direction().unit_vector();
-        let a: T = (unit_direction.y() + 1.0.into()) * 0.5.into();
-        let mut result = Color::new(1.0.into(), 1.0.into(), 1.0.into());
-        let scaler: T = (<T as From<f32>>::from(1.0) - a).into();
+        let a: T = (unit_direction.y() + T::one()) * 0.5.into();
+        let mut result = Color::from([T::one(); 3]);
+        let scaler: T = T::one() - a;
         result *= scaler;
         result += Color::new(0.5.into(), 0.7.into(), 1.0.into()) * a;
         result
@@ -130,7 +130,7 @@ impl<T: VElem> Camera<T> {
         Vec3::new(
             self.rand_distr.sample(&mut rng),
             self.rand_distr.sample(&mut rng),
-            0.0.into(),
+            T::zero(),
         )
     }
 }
