@@ -1,5 +1,5 @@
 use crate::hittable::{HitRecord, Hittable};
-use crate::vec3::{Point3, Vec3};
+use crate::vec3::Point3;
 use crate::velem::VElem;
 
 pub struct Sphere<T: VElem> {
