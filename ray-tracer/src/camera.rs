@@ -3,9 +3,13 @@ use crate::hittable::Hittable;
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 use crate::velem::VElem;
+use rand::distributions::{Distribution, Uniform};
 use std::io::{stderr, stdout, Write};
 
 pub struct Camera<T: VElem> {
+    samples_per_pixel: u16,
+    samples_scale: T,
+    rand_distr: Uniform<T>,
     aspect_ratio: T,
     image_width: u64,
     image_height: u64,
@@ -16,7 +20,7 @@ pub struct Camera<T: VElem> {
 }
 
 impl<T: VElem> Camera<T> {
-    pub fn new(aspect_ratio: (u8, u8), image_width: u64) -> Self {
+    pub fn new(aspect_ratio: (u8, u8), image_width: u64, samples_per_pixel: u16) -> Self {
         let aspect_ratio = aspect_ratio.0 as f32 / aspect_ratio.1 as f32;
         let image_height = (image_width as f32 / aspect_ratio) as u64;
         assert!(image_height > 1);
@@ -51,6 +55,9 @@ impl<T: VElem> Camera<T> {
             viewport_upper_left + (pixel_delta_u + pixel_delta_v) * Into::<T>::into(0.5);
 
         Self {
+            samples_per_pixel,
+            samples_scale: (1.0 / samples_per_pixel as f32).into(),
+            rand_distr: Uniform::<T>::new_inclusive(Into::<T>::into(-0.5), Into::<T>::into(0.5)),
             aspect_ratio: aspect_ratio.into(),
             image_width,
             image_height,
@@ -76,12 +83,12 @@ impl<T: VElem> Camera<T> {
             write!(err, "\rLines remaining: {}  ", self.image_height - y).unwrap();
             let _ = err.flush();
             for x in 0..self.image_width {
-                let pixel_center = self.pixel00_loc
-                    + (self.pixel_delta_u * Into::<T>::into(x as f32))
-                    + (self.pixel_delta_v * Into::<T>::into(y as f32));
-                let ray_direction = pixel_center - self.center;
-                let r = Ray::new(self.center, ray_direction);
-                let color = self.ray_color(&r, world);
+                let mut color = Color::<T>::default();
+                for _ in 0..self.samples_per_pixel {
+                    let r = self.get_ray(x, y);
+                    color += r.color(world);
+                }
+                color *= self.samples_scale;
                 color.write_color(&mut lock).unwrap();
             }
         }
@@ -99,5 +106,31 @@ impl<T: VElem> Camera<T> {
         result *= scaler;
         result += Color::new(0.5.into(), 0.7.into(), 1.0.into()) * a;
         result
+    }
+
+    fn get_ray(&self, x: u64, y: u64) -> Ray<T> {
+        // Construct a camera ray originating from the origin and directed at randomly sampled
+        // point around the pixel location i, j.
+        let x: T = (x as f32).into();
+        let y: T = (y as f32).into();
+
+        let offset = self.sample_square();
+        let pixel_sample = self.pixel00_loc
+            + (self.pixel_delta_u * (x + offset.x()))
+            + (self.pixel_delta_v * (y + offset.y()));
+
+        let ray_origin = self.center;
+        let ray_direction = pixel_sample - ray_origin;
+
+        Ray::new(ray_origin, ray_direction)
+    }
+
+    fn sample_square(&self) -> Vec3<T> {
+        let mut rng = rand::thread_rng();
+        Vec3::new(
+            self.rand_distr.sample(&mut rng),
+            self.rand_distr.sample(&mut rng),
+            0.0.into(),
+        )
     }
 }
