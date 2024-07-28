@@ -4,17 +4,18 @@ use std::io::Write;
 
 pub type Color<T> = Vec3<T>;
 
-impl<T: VElem + From<f32>> Color<T> {
+impl<T: VElem> Color<T> {
     pub fn write_color<W>(self, out: &mut W) -> Result<(), std::io::Error>
     where
         W: Write,
     {
+        let intensity: std::ops::RangeInclusive<T> = 0.0.into()..=0.999.into();
         writeln!(
             out,
             "{} {} {}",
-            (self.x() * 259.999.into()).trunc(),
-            (self.y() * 259.999.into()).trunc(),
-            (self.z() * 259.999.into()).trunc()
+            (self.x().clamp(*intensity.start(), *intensity.end()) * 256.0.into()).trunc(),
+            (self.y().clamp(*intensity.start(), *intensity.end()) * 256.0.into()).trunc(),
+            (self.z().clamp(*intensity.start(), *intensity.end()) * 256.0.into()).trunc(),
         )
     }
 }
