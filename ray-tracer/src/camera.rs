@@ -95,20 +95,6 @@ impl<T: VElem> Camera<T> {
         write!(err, "\r Done                          \n").unwrap();
     }
 
-    fn ray_color(&self, ray: &Ray<T>, world: &impl Hittable<T>) -> Color<T> {
-        if let Some(hr) = world.hit(ray, T::zero()..=T::max_value()) {
-            let dir = Vec3::random_on_hemisphere(hr.normal);
-            return self.ray_color(&Ray::new(hr.p, dir), world) * Into::<T>::into(0.5);
-        }
-        let unit_direction = ray.direction().unit_vector();
-        let a: T = (unit_direction.y() + T::one()) * 0.5.into();
-        let mut result = Color::from([T::one(); 3]);
-        let scaler: T = T::one() - a;
-        result *= scaler;
-        result += Color::new(0.5.into(), 0.7.into(), 1.0.into()) * a;
-        result
-    }
-
     fn get_ray(&self, x: u64, y: u64) -> Ray<T> {
         // Construct a camera ray originating from the origin and directed at randomly sampled
         // point around the pixel location i, j.
