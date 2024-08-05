@@ -73,6 +73,28 @@ where
             ],
         }
     }
+
+    pub fn random_unit_sphere() -> Self {
+        loop {
+            let v = Self::random_range(-T::one()..=T::one());
+            if v.length_squared() < T::one() {
+                return v;
+            }
+        }
+    }
+
+    pub fn random_unit_vec() -> Self {
+        Self::random_unit_sphere().unit_vector()
+    }
+
+    pub fn random_on_hemisphere(normal: Self) -> Self {
+        let v_sp = Self::random_unit_sphere();
+        if v_sp.dot(&normal) >= T::zero() {
+            v_sp
+        } else {
+            Self::default() - v_sp
+        }
+    }
 }
 
 #[cfg(test)]
