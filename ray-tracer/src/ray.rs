@@ -31,7 +31,7 @@ impl<T: VElem> Ray<T> {
     }
 
     pub fn color(&self, world: &impl Hittable<T>) -> Color<T> {
-        if let Some(hr) = world.hit(self, 0.0.into()..=f32::MAX.into()) {
+        if let Some(hr) = world.hit(self, T::zero()..=T::max_value()) {
             return (hr.normal + Color::from([1.0.into(); 3])) * Into::<T>::into(0.5);
         }
         let unit_direction = self.direction().unit_vector();
