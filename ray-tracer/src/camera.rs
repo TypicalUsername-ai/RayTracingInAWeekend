@@ -96,8 +96,9 @@ impl<T: VElem> Camera<T> {
     }
 
     fn ray_color(&self, ray: &Ray<T>, world: &impl Hittable<T>) -> Color<T> {
-        if let Some(hr) = world.hit(ray, 0.0.into()..=f32::MAX.into()) {
-            return (hr.normal + Color::from([1.0.into(); 3])) * Into::<T>::into(0.5);
+        if let Some(hr) = world.hit(ray, T::zero()..=T::max_value()) {
+            let dir = Vec3::random_on_hemisphere(hr.normal);
+            return self.ray_color(&Ray::new(hr.p, dir), world) * Into::<T>::into(0.5);
         }
         let unit_direction = ray.direction().unit_vector();
         let a: T = (unit_direction.y() + T::one()) * 0.5.into();
