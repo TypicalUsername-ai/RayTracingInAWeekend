@@ -1,4 +1,5 @@
 use crate::velem::VElem;
+use rand::distributions::{Distribution, Uniform};
 use std::ops;
 
 #[derive(Clone, Copy, Debug)]
@@ -55,6 +56,22 @@ where
     #[inline]
     pub fn length_squared(&self) -> T {
         self.x() * self.x() + self.y() * self.y() + self.z() * self.z()
+    }
+
+    pub fn random() -> Self {
+        Self::random_range(T::min_value()..=T::max_value())
+    }
+
+    pub fn random_range(range: ops::RangeInclusive<T>) -> Self {
+        let mut rng = rand::thread_rng();
+        let dist = Uniform::<T>::from(range);
+        Self {
+            xyz: [
+                dist.sample(&mut rng),
+                dist.sample(&mut rng),
+                dist.sample(&mut rng),
+            ],
+        }
     }
 }
 
