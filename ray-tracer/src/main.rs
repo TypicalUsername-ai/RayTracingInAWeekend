@@ -3,6 +3,7 @@ mod camera;
 mod color;
 mod hittable;
 mod hittable_list;
+mod lambertian;
 mod material;
 mod ray;
 mod sphere;
