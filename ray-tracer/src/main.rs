@@ -5,6 +5,7 @@ mod hittable;
 mod hittable_list;
 mod lambertian;
 mod material;
+mod metal;
 mod ray;
 mod sphere;
 mod vec3;
