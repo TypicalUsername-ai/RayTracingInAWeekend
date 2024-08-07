@@ -1,4 +1,5 @@
 use crate::velem::VElem;
+use num_traits::Zero;
 use rand::distributions::{Distribution, Uniform};
 use std::ops;
 
@@ -92,7 +93,7 @@ where
         if v_sp.dot(&normal) >= T::zero() {
             v_sp
         } else {
-            Self::default() - v_sp
+            Self::zero() - v_sp
         }
     }
 }
@@ -150,6 +151,18 @@ mod default_test {
     fn default_test() {
         let v = Vec3::<f32>::default();
         assert_eq!(v.xyz, [0.0; 3])
+    }
+}
+
+impl<T: VElem> Zero for Vec3<T> {
+    fn is_zero(&self) -> bool {
+        self.xyz[0].is_zero() && self.xyz[1].is_zero() && self.xyz[2].is_zero()
+    }
+
+    fn zero() -> Self {
+        Self {
+            xyz: [T::zero(); 3],
+        }
     }
 }
 

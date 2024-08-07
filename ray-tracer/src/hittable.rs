@@ -2,6 +2,7 @@ use crate::material::Material;
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 use crate::velem::VElem;
+use num_traits::Zero;
 use std::ops::RangeInclusive;
 use std::rc::Rc;
 
@@ -19,7 +20,7 @@ impl<T: VElem> HitRecord<T> {
         self.normal = if self.front_facing {
             outward_normal
         } else {
-            Vec3::default() - outward_normal // vec3 is 0s
+            Vec3::zero() - outward_normal // vec3 is 0s
         };
     }
 }
