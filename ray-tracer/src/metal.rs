@@ -8,7 +8,7 @@ pub struct Metal<T: VElem> {
 }
 
 impl<T: VElem> Metal<T> {
-    fn new(albedo: Color<T>) -> Self {
+    pub fn new(albedo: Color<T>) -> Self {
         Self { albedo }
     }
 }
