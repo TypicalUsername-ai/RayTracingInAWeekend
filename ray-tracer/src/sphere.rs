@@ -1,17 +1,20 @@
 use crate::hittable::{HitRecord, Hittable};
+use crate::material::Material;
 use crate::vec3::Point3;
 use crate::velem::VElem;
 
 pub struct Sphere<T: VElem> {
     center: Point3<T>,
     radius: T,
+    material: Box<dyn Material<T>>,
 }
 
 impl<T: VElem> Sphere<T> {
-    pub fn new(center: Point3<T>, radius: T) -> Self {
+    pub fn new(center: Point3<T>, radius: T, material: impl Material<T> + 'static) -> Self {
         Self {
             center,
             radius: T::max(0.0.into(), radius),
+            material: Box::new(material),
         }
     }
 }
