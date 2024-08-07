@@ -2,11 +2,12 @@ use crate::hittable::{HitRecord, Hittable};
 use crate::material::Material;
 use crate::vec3::Point3;
 use crate::velem::VElem;
+use std::rc::Rc;
 
 pub struct Sphere<T: VElem> {
     center: Point3<T>,
     radius: T,
-    material: Box<dyn Material<T>>,
+    material: Rc<dyn Material<T>>,
 }
 
 impl<T: VElem> Sphere<T> {
@@ -14,7 +15,7 @@ impl<T: VElem> Sphere<T> {
         Self {
             center,
             radius: T::max(0.0.into(), radius),
-            material: Box::new(material),
+            material: Rc::new(material),
         }
     }
 }
@@ -50,6 +51,7 @@ impl<T: VElem> Hittable<T> for Sphere<T> {
                 p: ray.at(root),
                 normal: outward_normal,
                 front_facing: false,
+                material: self.material.clone(),
             };
             hit_r.set_face_normal(&ray, outward_normal);
             Some(hit_r)

@@ -1,13 +1,16 @@
+use crate::material::Material;
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 use crate::velem::VElem;
 use std::ops::RangeInclusive;
+use std::rc::Rc;
 
 pub struct HitRecord<T: VElem> {
     pub p: Point3<T>,
     pub normal: Vec3<T>,
     pub t: T,
     pub front_facing: bool,
+    pub material: Rc<dyn Material<T>>,
 }
 
 impl<T: VElem> HitRecord<T> {
