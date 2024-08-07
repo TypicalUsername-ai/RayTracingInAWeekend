@@ -5,20 +5,20 @@ use crate::vec3::Vec3;
 use crate::velem::VElem;
 use num_traits::Zero;
 
-pub struct Albertian<T: VElem> {
+pub struct Lambertian<T: VElem> {
     albedo: Color<T>,
 }
 
-impl<T: VElem> Albertian<T> {
+impl<T: VElem> Lambertian<T> {
     pub fn new(albedo: Color<T>) -> Self {
         Self { albedo }
     }
 }
 
-impl<T: VElem> Material<T> for Albertian<T> {
+impl<T: VElem> Material<T> for Lambertian<T> {
     fn scatter(
         &self,
-        ray_in: &crate::ray::Ray<T>,
+        _ray_in: &crate::ray::Ray<T>,
         hit: &crate::hittable::HitRecord<T>,
     ) -> (crate::ray::Ray<T>, crate::color::Color<T>) {
         let scatter_dir = hit.normal + Vec3::random_unit_vec();
