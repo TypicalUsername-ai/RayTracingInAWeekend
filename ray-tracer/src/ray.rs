@@ -35,7 +35,7 @@ impl<T: VElem> Ray<T> {
             return Color::default();
         }
         if let Some(hr) = world.hit(self, Into::<T>::into(0.0001)..=T::max_value()) {
-            let dir = Vec3::random_on_hemisphere(hr.normal);
+            let dir = hr.normal + Vec3::random_unit_vec();
             return Ray::new(hr.p, dir).color(world, depth - 1) * Into::<T>::into(0.5);
         }
         let unit_direction = self.direction().unit_vector();
