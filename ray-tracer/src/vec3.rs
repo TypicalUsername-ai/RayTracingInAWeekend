@@ -96,6 +96,10 @@ where
             Self::zero() - v_sp
         }
     }
+
+    pub fn reflect(&self, normal: Self) -> Self {
+        *self - normal * Into::<T>::into(2.0) * self.dot(&normal)
+    }
 }
 
 #[cfg(test)]
