@@ -16,11 +16,10 @@ impl<T: VElem> Metal<T> {
 impl<T: VElem> Material<T> for Metal<T> {
     fn scatter(
         &self,
-        ray_in: crate::ray::Ray<T>,
-        hit: crate::hittable::HitRecord<T>,
-        attenuation: Color<T>,
-    ) -> crate::ray::Ray<T> {
+        ray_in: &crate::ray::Ray<T>,
+        hit: &crate::hittable::HitRecord<T>,
+    ) -> (crate::ray::Ray<T>, crate::color::Color<T>) {
         let reflected = ray_in.direction().reflect(hit.normal);
-        Ray::new(hit.p, reflected)
+        (Ray::new(hit.p, reflected), self.albedo)
     }
 }

@@ -18,16 +18,16 @@ impl<T: VElem> Albertian<T> {
 impl<T: VElem> Material<T> for Albertian<T> {
     fn scatter(
         &self,
-        ray_in: crate::ray::Ray<T>,
-        hit: crate::hittable::HitRecord<T>,
-        attenuation: Color<T>,
-    ) -> crate::ray::Ray<T> {
+        ray_in: &crate::ray::Ray<T>,
+        hit: &crate::hittable::HitRecord<T>,
+    ) -> (crate::ray::Ray<T>, crate::color::Color<T>) {
         let scatter_dir = hit.normal + Vec3::random_unit_vec();
         // hopefully catch degen scatter dirs
-        if scatter_dir.is_zero() {
+        let scattered = if scatter_dir.is_zero() {
             Ray::new(hit.p, hit.normal)
         } else {
             Ray::new(hit.p, scatter_dir)
-        }
+        };
+        (scattered, self.albedo)
     }
 }
