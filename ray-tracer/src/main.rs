@@ -20,6 +20,6 @@ fn main() {
     // image
     let aspect_ratio = (16, 9);
     let width = 400;
-    let c = Camera::new(aspect_ratio, width, 100);
+    let c = Camera::new(aspect_ratio, width, 100, 10);
     c.render(&world)
 }

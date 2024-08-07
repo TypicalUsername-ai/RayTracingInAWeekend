@@ -8,6 +8,7 @@ use std::io::{stderr, stdout, Write};
 
 pub struct Camera<T: VElem> {
     samples_per_pixel: u16,
+    max_depth: u16,
     samples_scale: T,
     rand_distr: Uniform<T>,
     aspect_ratio: T,
@@ -20,7 +21,12 @@ pub struct Camera<T: VElem> {
 }
 
 impl<T: VElem> Camera<T> {
-    pub fn new(aspect_ratio: (u8, u8), image_width: u64, samples_per_pixel: u16) -> Self {
+    pub fn new(
+        aspect_ratio: (u8, u8),
+        image_width: u64,
+        samples_per_pixel: u16,
+        max_depth: u16,
+    ) -> Self {
         let aspect_ratio = aspect_ratio.0 as f32 / aspect_ratio.1 as f32;
         let image_height = (image_width as f32 / aspect_ratio) as u64;
         assert!(image_height > 1);
@@ -56,6 +62,7 @@ impl<T: VElem> Camera<T> {
 
         Self {
             samples_per_pixel,
+            max_depth,
             samples_scale: (1.0 / samples_per_pixel as f32).into(),
             rand_distr: Uniform::<T>::new_inclusive(Into::<T>::into(-0.5), Into::<T>::into(0.5)),
             aspect_ratio: aspect_ratio.into(),
@@ -86,7 +93,7 @@ impl<T: VElem> Camera<T> {
                 let mut color = Color::<T>::default();
                 for _ in 0..self.samples_per_pixel {
                     let r = self.get_ray(x, y);
-                    color += r.color(world);
+                    color += r.color(world, self.max_depth);
                 }
                 color *= self.samples_scale;
                 color.write_color(&mut lock).unwrap();
