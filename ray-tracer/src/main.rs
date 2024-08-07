@@ -16,8 +16,8 @@ type Camera = camera::Camera<f32>;
 type Color = color::Color<f32>;
 
 fn main() {
-    let ground = lambertian::Lambertian::new(Color::new(0.8, 0.8, 0.0));
-    let center = lambertian::Lambertian::new(Color::new(0.1, 0.2, 0.5));
+    let ground = lambertian::Lambertian::new(Color::new(0.2, 0.2, 0.2));
+    let center = lambertian::Lambertian::new(Color::new(0.8, 0.2, 0.5));
     let left = metal::Metal::new(Color::new(0.8, 0.8, 0.8));
     let right = metal::Metal::new(Color::new(0.8, 0.6, 0.2));
 
