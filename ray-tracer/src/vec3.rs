@@ -3,7 +3,7 @@ use num_traits::Zero;
 use rand::distributions::{Distribution, Uniform};
 use std::ops;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Vec3<T: VElem> {
     xyz: [T; 3],
 }
