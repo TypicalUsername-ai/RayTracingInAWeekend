@@ -39,12 +39,12 @@ mod color_tests {
 
     #[test]
     fn test_color() {
-        let v = Color::from([3.0, 0.0, 4.0]);
+        let v = Color::from([1.0, 0.0, 4.0]);
         let mut s = Vec::new();
         v.unit_vector()
             .write_color(&mut s)
             .expect("Should write normally");
         let st = String::from_utf8(s).unwrap();
-        assert_eq!(st, "155 0 207\n");
+        assert_eq!(st, "126 0 252\n");
     }
 }
