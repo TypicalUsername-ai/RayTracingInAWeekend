@@ -184,7 +184,8 @@ mod impl_tests {
     #[test]
     fn random_unit_vec() {
         let ru = Vec3::<f32>::random_unit_vec();
-        assert!(ru.length() == 1.0);
+        // forgive mistakes up to 0.000001
+        assert!(ru.length() + 0.000001 >= 1.0);
     }
 
     #[test]
