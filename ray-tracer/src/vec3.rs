@@ -59,8 +59,11 @@ where
         self.x() * self.x() + self.y() * self.y() + self.z() * self.z()
     }
 
+    /// generates a fully random number
+    /// **IMPORTANT** the rnage here is -1e10 to 1e10 due to rand crate limitations on using MAX
+    /// consts
     pub fn random() -> Self {
-        Self::random_range(T::min_value()..=T::max_value())
+        Self::random_range(Into::<T>::into(-1e10)..=1e10.into())
     }
 
     pub fn random_range(range: ops::RangeInclusive<T>) -> Self {
@@ -135,6 +138,60 @@ mod impl_tests {
     fn unit_vector() {
         let v = Vec3::from([0.0, -3.0, 4.0]);
         assert_eq!(v.unit_vector().xyz, [0.0, -0.6, 0.8]);
+    }
+
+    #[test]
+    fn dot_product() {
+        let v1 = Vec3::new(1.0, 2.0, 5.0);
+        let v2 = Vec3::new(0.0, -1.0, 0.5);
+
+        assert_eq!(v1.dot(&v2), 0.5);
+    }
+
+    #[test]
+    fn random_vec() {
+        let rv = Vec3::random();
+        assert!(-1e10 <= rv.x());
+        assert!(rv.x() <= 1e10);
+        assert!(-1e10 <= rv.y());
+        assert!(rv.y() <= 1e10);
+        assert!(-1e10 <= rv.z());
+        assert!(rv.z() <= 1e10);
+    }
+
+    #[test]
+    fn random_range() {
+        let rv = Vec3::random_range(0.0..=1e20);
+        assert!(0.0 <= rv.x());
+        assert!(rv.x() <= 1e20);
+        assert!(0.0 <= rv.y());
+        assert!(rv.y() <= 1e20);
+        assert!(0.0 <= rv.z());
+        assert!(rv.z() <= 1e20);
+    }
+
+    #[test]
+    fn random_unit_sphere() {
+        let rs = Vec3::random_unit_sphere();
+        assert!(-1.0 <= rs.x());
+        assert!(rs.x() <= 1.0);
+        assert!(-1.0 <= rs.y());
+        assert!(rs.y() <= 1.0);
+        assert!(-1.0 <= rs.z());
+        assert!(rs.z() <= 1.0);
+    }
+
+    #[test]
+    fn random_unit_vec() {
+        let ru = Vec3::<f32>::random_unit_vec();
+        assert!(ru.length() == 1.0);
+    }
+
+    #[test]
+    fn reflect() {
+        let v = Vec3::new(3.0, 4.0, 0.0);
+        let surf = Vec3::new(0.0, 1.0, 0.0);
+        assert_eq!(v.reflect(surf).xyz, [3.0, -4.0, 0.0])
     }
 }
 
