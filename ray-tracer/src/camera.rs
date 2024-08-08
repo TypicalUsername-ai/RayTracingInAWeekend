@@ -128,3 +128,21 @@ impl<T: VElem> Camera<T> {
         )
     }
 }
+
+#[cfg(test)]
+mod impl_tests {
+
+    use super::*;
+
+    #[test]
+    fn new_test() {
+        let c = Camera::<f32>::new((1, 2), 100, 10, 10);
+        // height as provided
+        assert_eq!(c.image_width, 100);
+        // width aspect ratio x the height
+        assert_eq!(c.image_height, 200);
+        assert_eq!(c.max_depth, 10);
+        assert_eq!(c.samples_per_pixel, 10);
+        assert_eq!(c.pixel00_loc, Point3::new(-0.495, 0.995, -1.0))
+    }
+}
