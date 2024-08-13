@@ -103,6 +103,13 @@ where
     pub fn reflect(&self, normal: Self) -> Self {
         *self - normal * Into::<T>::into(2.0) * self.dot(&normal)
     }
+
+    pub fn refract(&self, normal: Self, etai_over_etat: T) -> Self {
+        let cos_theta = -self.dot(&normal).min(T::one());
+        let r_out_perp: Vec3<_> = (*self + normal * cos_theta) * etai_over_etat;
+        let r_out_parallel: Vec3<_> = normal * -(T::one() - r_out_perp.length_squared()).sqrt();
+        r_out_perp + r_out_parallel
+    }
 }
 
 #[cfg(test)]
