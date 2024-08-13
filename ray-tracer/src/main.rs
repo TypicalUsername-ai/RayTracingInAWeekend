@@ -1,6 +1,7 @@
 use std::rc::Rc;
 mod camera;
 mod color;
+mod dielectric;
 mod hittable;
 mod hittable_list;
 mod lambertian;
