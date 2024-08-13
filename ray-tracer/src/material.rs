@@ -4,5 +4,5 @@ use crate::ray::Ray;
 use crate::velem::VElem;
 
 pub trait Material<T: VElem> {
-    fn scatter(&self, ray_in: &Ray<T>, hit: &HitRecord<T>) -> (Ray<T>, Color<T>);
+    fn scatter(&self, ray_in: &Ray<T>, hit: &HitRecord<T>) -> Option<(Ray<T>, Color<T>)>;
 }

@@ -35,8 +35,11 @@ impl<T: VElem> Ray<T> {
             return Color::default();
         }
         if let Some(hr) = world.hit(self, Into::<T>::into(0.0001)..=T::max_value()) {
-            let (scattered, attenuation) = hr.material.scatter(self, &hr);
-            return attenuation * scattered.color(world, depth - 1);
+            if let Some((scattered, attenuation)) = hr.material.scatter(self, &hr) {
+                return attenuation * scattered.color(world, depth - 1);
+            } else {
+                return Color::from([T::zero(); 3]);
+            }
         }
         let unit_direction = self.direction().unit_vector();
         let a: T = (unit_direction.y() + T::one()) * 0.5.into();
