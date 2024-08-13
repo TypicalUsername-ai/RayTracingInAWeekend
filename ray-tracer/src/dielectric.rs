@@ -7,6 +7,12 @@ pub struct Dielectric<T: VElem> {
     refraction_index: T,
 }
 
+impl<T: VElem> Dielectric<T> {
+    pub fn new(refraction_index: T) -> Self {
+        Self { refraction_index }
+    }
+}
+
 impl<T: VElem> Material<T> for Dielectric<T> {
     fn scatter(
         &self,
