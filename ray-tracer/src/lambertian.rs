@@ -20,7 +20,7 @@ impl<T: VElem> Material<T> for Lambertian<T> {
         &self,
         _ray_in: &crate::ray::Ray<T>,
         hit: &crate::hittable::HitRecord<T>,
-    ) -> (crate::ray::Ray<T>, crate::color::Color<T>) {
+    ) -> Option<(crate::ray::Ray<T>, crate::color::Color<T>)> {
         let scatter_dir = hit.normal + Vec3::random_unit_vec();
         // hopefully catch degen scatter dirs
         let scattered = if scatter_dir.is_zero() {
@@ -28,6 +28,6 @@ impl<T: VElem> Material<T> for Lambertian<T> {
         } else {
             Ray::new(hit.p, scatter_dir)
         };
-        (scattered, self.albedo)
+        Some((scattered, self.albedo))
     }
 }
