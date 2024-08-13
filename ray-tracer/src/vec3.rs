@@ -105,7 +105,7 @@ where
     }
 
     pub fn refract(&self, normal: Self, etai_over_etat: T) -> Self {
-        let cos_theta = -self.dot(&normal).min(T::one());
+        let cos_theta = ((-self).dot(&normal)).min(T::one());
         let r_out_perp: Vec3<_> = (*self + normal * cos_theta) * etai_over_etat;
         let r_out_parallel: Vec3<_> = normal * -(T::one() - r_out_perp.length_squared()).sqrt();
         r_out_perp + r_out_parallel
@@ -231,6 +231,16 @@ impl<T: VElem> Zero for Vec3<T> {
     fn zero() -> Self {
         Self {
             xyz: [T::zero(); 3],
+        }
+    }
+}
+
+impl<T: VElem> ops::Neg for Vec3<T> {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self {
+            xyz: [-self.xyz[0], -self.xyz[1], -self.xyz[2]],
         }
     }
 }
