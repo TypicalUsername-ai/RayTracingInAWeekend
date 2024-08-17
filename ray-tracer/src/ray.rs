@@ -31,8 +31,8 @@ impl<T: VElem> Ray<T> {
     }
 
     pub fn color(&self, world: &impl Hittable<T>, depth: u16) -> Color<T> {
-        if depth <= 0 {
-            return Color::default();
+        if depth == 0 {
+            return Color::from([T::one(); 3]);
         }
         if let Some(hr) = world.hit(self, Into::<T>::into(0.0001)..=T::max_value()) {
             if let Some((scattered, attenuation)) = hr.material.scatter(self, &hr) {
@@ -43,11 +43,8 @@ impl<T: VElem> Ray<T> {
         }
         let unit_direction = self.direction().unit_vector();
         let a: T = (unit_direction.y() + T::one()) * 0.5.into();
-        let mut result = Color::from([T::one(); 3]);
-        let scaler: T = T::one() - a;
-        result *= scaler;
-        result += Color::new(0.5.into(), 0.7.into(), 1.0.into()) * a;
-        result
+        Color::from([T::one(); 3]) * (T::one() - a)
+            + Color::from([0.5.into(), 0.7.into(), T::one()]) * a
     }
 }
 
