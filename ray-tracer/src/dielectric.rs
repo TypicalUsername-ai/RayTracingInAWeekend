@@ -9,6 +9,11 @@ pub struct Dielectric<T: VElem> {
 
 impl<T: VElem> Dielectric<T> {
     pub fn new(refraction_index: T) -> Self {
+        assert!(
+            refraction_index >= T::one(),
+            "refraction index less than 1: {}",
+            refraction_index
+        );
         Self { refraction_index }
     }
 }
