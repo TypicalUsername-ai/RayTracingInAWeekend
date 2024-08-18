@@ -105,10 +105,9 @@ where
     }
 
     pub fn refract(&self, normal: Self, etai_over_etat: T) -> Self {
-        let cos_theta = (-self).dot(&normal).min(T::one());
+        let cos_theta = T::min((-self).dot(&normal), T::one());
         let r_out_perp: Vec3<_> = (*self + normal * cos_theta) * etai_over_etat;
-        let r_out_parallel: Vec3<_> =
-            normal * -(T::abs(T::one() - r_out_perp.length_squared())).sqrt();
+        let r_out_parallel: Vec3<_> = normal * -T::sqrt(T::one() - r_out_perp.length_squared());
         r_out_perp + r_out_parallel
     }
 }
@@ -201,6 +200,20 @@ mod impl_tests {
         let v = Vec3::new(3.0, 4.0, 0.0);
         let surf = Vec3::new(0.0, 1.0, 0.0);
         assert_eq!(v.reflect(surf).xyz, [3.0, -4.0, 0.0])
+    }
+
+    #[test]
+    fn refract() {
+        let v = Vec3::new(1.0, -1.0, 0.0);
+        let normal = Vec3::new(0.0, 1.0, 0.0);
+        let refracted = v.refract(normal, 0.66);
+        assert_eq!(refracted.x(), 0.660);
+        assert!(
+            refracted.y() <= -0.751,
+            "got y = {} instead of approx -0.751",
+            refracted.y()
+        );
+        assert_eq!(refracted.z(), 0.0);
     }
 }
 
