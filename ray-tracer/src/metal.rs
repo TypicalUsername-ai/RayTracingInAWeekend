@@ -11,7 +11,7 @@ pub struct Metal<T: VElem> {
 
 impl<T: VElem> Metal<T> {
     pub fn new(albedo: Color<T>, fuzz: T) -> Self {
-        let fuzz = fuzz.max(T::one());
+        let fuzz = T::min(fuzz, T::one());
         Self { albedo, fuzz }
     }
 }
