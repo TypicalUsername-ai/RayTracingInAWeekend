@@ -5,6 +5,7 @@ pub trait VElem:
     + From<f32>
     + Default
     + std::fmt::Display
+    + std::fmt::Debug
     + rand::distributions::uniform::SampleBorrow<Self>
     + rand::distributions::uniform::SampleUniform
 {
