@@ -2,6 +2,7 @@ use crate::color::Color;
 use crate::material::Material;
 use crate::ray::Ray;
 use crate::velem::VElem;
+use rand::Rng;
 
 pub struct Dielectric<T: VElem> {
     refraction_index: T,
@@ -10,6 +11,14 @@ pub struct Dielectric<T: VElem> {
 impl<T: VElem> Dielectric<T> {
     pub fn new(refraction_index: T) -> Self {
         Self { refraction_index }
+    }
+
+    /// function for reflectance done using schlick's approximation
+    fn reflectance(cos: T, refraction_index: T) -> T {
+        // Use Schlick's approximation for reflectance.
+        let mut r0 = (T::one() - refraction_index) / (T::one() + refraction_index);
+        r0 = r0 * r0;
+        return r0 + (T::one() - r0) * (T::one() - cos).powf(5.0.into());
     }
 }
 
@@ -30,7 +39,9 @@ impl<T: VElem> Material<T> for Dielectric<T> {
         let cos_theta = T::min((-unit_dir).dot(&hit.normal), T::one());
         let sin_theta = T::sqrt(T::one() - cos_theta * cos_theta);
 
-        let direction = if ri * sin_theta > T::one() {
+        let direction = if ri * sin_theta > T::one()
+            || Self::reflectance(cos_theta, ri) > rand::thread_rng().gen_range(0.0..=1.0).into()
+        {
             unit_dir.reflect(hit.normal)
         } else {
             unit_dir.refract(hit.normal, ri)
