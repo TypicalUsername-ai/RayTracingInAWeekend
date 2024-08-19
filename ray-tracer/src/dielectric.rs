@@ -9,11 +9,6 @@ pub struct Dielectric<T: VElem> {
 
 impl<T: VElem> Dielectric<T> {
     pub fn new(refraction_index: T) -> Self {
-        assert!(
-            refraction_index >= T::one(),
-            "refraction index less than 1: {}",
-            refraction_index
-        );
         Self { refraction_index }
     }
 }
@@ -31,8 +26,16 @@ impl<T: VElem> Material<T> for Dielectric<T> {
             self.refraction_index
         };
         let unit_dir = ray_in.direction().unit_vector();
-        let refracted = unit_dir.refract(hit.normal, ri);
 
-        Some((Ray::new(hit.p, refracted), attenuation))
+        let cos_theta = T::min((-unit_dir).dot(&hit.normal), T::one());
+        let sin_theta = T::sqrt(T::one() - cos_theta * cos_theta);
+
+        let direction = if ri * sin_theta > T::one() {
+            unit_dir.reflect(hit.normal)
+        } else {
+            unit_dir.refract(hit.normal, ri)
+        };
+
+        Some((Ray::new(hit.p, direction), attenuation))
     }
 }
