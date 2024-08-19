@@ -19,7 +19,8 @@ type Color = color::Color<f32>;
 fn main() {
     let ground = lambertian::Lambertian::new(Color::new(0.8, 0.8, 0.0));
     let center = lambertian::Lambertian::new(Color::new(0.1, 0.2, 0.5));
-    let left = dielectric::Dielectric::new(1.0 / 1.33);
+    let left = dielectric::Dielectric::new(1.50);
+    let bubble = dielectric::Dielectric::new(1.0 / 1.50);
     let right = metal::Metal::new(Color::new(0.8, 0.6, 0.2), 1.0);
 
     let world: hittable_list::HittableList<f32> = vec![
@@ -32,6 +33,11 @@ fn main() {
             Point::from([-1.0, 0.0, -1.0]),
             0.5,
             left,
+        )),
+        Rc::new(sphere::Sphere::new(
+            Point::from([-1.0, 0.0, -1.0]),
+            0.4,
+            bubble,
         )),
         Rc::new(sphere::Sphere::new(
             Point::from([1.0, 0.0, -1.0]),
