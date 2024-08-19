@@ -19,7 +19,7 @@ type Color = color::Color<f32>;
 fn main() {
     let ground = lambertian::Lambertian::new(Color::new(0.8, 0.8, 0.0));
     let center = lambertian::Lambertian::new(Color::new(0.1, 0.2, 0.5));
-    let left = metal::Metal::new(Color::new(0.8, 0.8, 0.8), 0.3);
+    let left = dielectric::Dielectric::new(1.0 / 1.33);
     let right = metal::Metal::new(Color::new(0.8, 0.6, 0.2), 1.0);
 
     let world: hittable_list::HittableList<f32> = vec![
